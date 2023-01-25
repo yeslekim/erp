@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/security?serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
+  jpa:
+    show-sql: true
+    properties:
+       hibernate.format_sql: true
+    hibernate:
+      ddl-auto: none
+  thymeleaf:
+    cache: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  mvc:
+    static-path-pattern: /static/**
+
+    
+server:
+  port: 8881
+  error:
+    path: '/error'
+    include-exception: true
+    include-stacktrace: always
+    whitelabel.enabled: true 
+    
+# jwt.secret.key의 값은 256bit 이상이어야 합니다.
+jwt:
+  secret:
+    key: x!A%D*G-KaPdSgVkYp3s5v8y/B?E(H+M
+
+# access token 만료시간
+token:
+  access:
+    expiration: 3600000 # 1hour
+  refresh:
+    expiration: 7200000 # 2hour
