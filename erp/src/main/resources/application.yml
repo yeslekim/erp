@@ -3,7 +3,7 @@ spring:
     hikari:
       maximum-pool-size: 10
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/security?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/erp?serverTimezone=Asia/Seoul
     username: root
     password: 1234
   jpa:

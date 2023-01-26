@@ -29,10 +29,10 @@ public class SignController {
 		return new ResponseEntity<>(signService.login(signRequest), HttpStatus.OK);
 	}
 	
-	@GetMapping("/refresh")
-	public ResponseEntity<SignResponseDTO> refresh(@RequestBody SignRequestDTO signRequest) throws Exception {
-		// front에서 access 토큰이 만료되었을 시 refresh토큰을 확인 후 access토큰을 재발급해줌
-		return new ResponseEntity<>(signService.refreshAccessToken(signRequest) , HttpStatus.OK);
-	}
+//	@GetMapping("/refresh")
+//	public ResponseEntity<SignResponseDTO> refresh(@RequestBody SignRequestDTO signRequest) throws Exception {
+//		// front에서 access 토큰이 만료되었을 시 refresh토큰을 확인 후 access토큰을 재발급해줌
+//		return new ResponseEntity<>(signService.refreshAccessToken(signRequest) , HttpStatus.OK);
+//	}
 	
 }

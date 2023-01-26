@@ -1,59 +1,50 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Insert title here</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	
-	<link rel="shortcut icon" href="#">
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-</head>
-<body>
-	<div class="container mt-5">
-		<div class="row justify-content-center">
-			<div class="col-lg-6">
-				<h1 class="text-center mb-5">Login</h1>
-				<div class="form-group">
-					<label for="username">UserEmail</label>
-					<input type="text" class="form-control" id="account" placeholder="Enter userEmail">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="fragment/login_view_layout">
+	<th:block layout:fragment="content_body_view">
+		<div class="container mt-5">
+			<div class="row justify-content-center">
+				<div class="col-lg-6">
+					<h1 class="text-center mb-5">Login</h1>
+					<div class="form-group">
+						<label for="username">UserEmail</label>
+						<input type="text" class="form-control" id="userId" placeholder="Enter userEmail">
+					</div>
+					<div class="form-group">
+						<label for="password">Password</label>
+						<input type="password" class="form-control" id="password" placeholder="Enter password">
+					</div>
+					<button class="btn btn-primary btn-block" onclick="login();">Submit</button>
 				</div>
-				<div class="form-group">
-					<label for="password">Password</label>
-					<input type="password" class="form-control" id="password" placeholder="Enter password">
-				</div>
-				<button class="btn btn-primary btn-block" onclick="login();">Submit</button>
 			</div>
 		</div>
-	</div>
-	
-<script src="/static/common/js/common.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script>
-
-	document.addEventListener("DOMContentLoaded", () => {
-	});
-	
-	// 로그인
-	function login() {
-		var account = document.getElementById("account").value;
-		var password = document.getElementById("password").value;
 		
-		// TODO validation
-		var dataSet = {
-			account : account
-			, password : password
-		}
-		common_send("POST", "/login", dataSet, function(data) {
-// 			1. 리프레시 토큰은 HTTP ONLY SECURE 쿠키에 저장하자.
-// 			2. 액세스 토큰은 프로그램상 자바스크립트 로컬 변수에 저장하고, http 헤더에 bearer 토큰으로 담아서 매 요청마다 보내도록 하자.
-			document.cookie = "rfTk=" + data.token.refresh_token + "; httpOnly";
-			window.localStorage.setItem("acTk", data.token.access_token);
-			sweetConfirmOkay("info", "로그인 성공", function() {
-				location.href="/view/user/main"
-			})
-		});
-	}
-</script>
-</body>
+		<script src="/static/common/js/common.js"></script>
+		<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+		<script>
+		
+			document.addEventListener("DOMContentLoaded", () => {
+			});
+			
+			// 로그인
+			function login() {
+				var userId = document.getElementById("userId").value;
+				var password = document.getElementById("password").value;
+				
+				// TODO validation
+				var dataSet = {
+					userId : userId
+					, password : password
+				}
+				common_send("POST", "/login", dataSet, function(data) {
+		// 			1. 리프레시 토큰은 HTTP ONLY SECURE 쿠키에 저장하자.
+		// 			2. 액세스 토큰은 프로그램상 자바스크립트 로컬 변수에 저장하고, http 헤더에 bearer 토큰으로 담아서 매 요청마다 보내도록 하자.
+					document.cookie = "rfTk=" + data.token.refreshToken + "; httpOnly";
+					window.localStorage.setItem("acTk", data.token.accessToken);
+					sweetConfirmOkay("info", "로그인 성공", function() {
+						location.href="/view/user/main"
+					})
+				});
+			}
+		</script>
+	</th:block>
 </html>

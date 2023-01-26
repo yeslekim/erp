@@ -12,5 +12,10 @@ public class UserViewController {
 	public String home() throws Exception {
 		return "user/main";
 	}
+	
+	@GetMapping("/board")
+	public String board() throws Exception {
+		return "user/board";
+	}
 
 }

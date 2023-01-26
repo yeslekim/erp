@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.study.erp.model.entity.Authority;
-import com.study.erp.model.entity.Member;
+import com.study.erp.model.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,9 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserResponseDTO {
 
-	private Long id;
-
-	private String account;
+	private String userId;
 
 	private String nickname;
 
@@ -33,12 +31,11 @@ public class UserResponseDTO {
 	
 	private String result;
 	
-	public UserResponseDTO(Member member) {
-		this.id = member.getId();
-		this.account = member.getAccount();
-		this.nickname = member.getNickname();
-		this.name = member.getName();
-		this.email = member.getEmail();
-		this.roles = member.getRoles();
+	public UserResponseDTO(User user) {
+		this.userId = user.getUserId();
+		this.nickname = user.getNickname();
+		this.name = user.getName();
+		this.email = user.getEmail();
+		this.roles = user.getRoles();
 	}
 }

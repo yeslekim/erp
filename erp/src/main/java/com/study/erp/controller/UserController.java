@@ -34,7 +34,7 @@ public class UserController {
 	public SignResponseDTO test(@RequestParam Map<String, Object> input) throws Exception {
 		return SignResponseDTO.builder()
 				.result("success")
-				.account("tset")
+				.userId("tset")
 				.build();
 	}
 }

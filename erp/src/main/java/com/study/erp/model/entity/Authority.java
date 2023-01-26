@@ -28,13 +28,13 @@ public class Authority {
 
     private String name;
 
-    @JoinColumn(name = "member")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    private Member member;
+    private User user;
 
-    public void setMember(Member member) {
-        this.member = member;
+    public void setUser(User user) {
+        this.user = user;
     }
     
 }

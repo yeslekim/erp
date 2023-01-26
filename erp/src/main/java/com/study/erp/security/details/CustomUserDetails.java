@@ -7,38 +7,38 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.study.erp.model.entity.Member;
+import com.study.erp.model.entity.User;
 
 public class CustomUserDetails implements UserDetails{
 
-	private final Member member;
+	private final User user;
 
-	public CustomUserDetails(Member member) {
-		this.member = member;
+	public CustomUserDetails(User user) {
+		this.user = user;
 	}
 
-	public final Member getMember() {
-		return member;
+	public final User getUser() {
+		return user;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-//		return Stream.of(member.getRoles()).map(o -> new SimpleGrantedAuthority(
+//		return Stream.of(user.getRoles()).map(o -> new SimpleGrantedAuthority(
 //				o.getValue()
 //		)).collect(Collectors.toList());
-		return member.getRoles().stream().map(o -> new SimpleGrantedAuthority(
+		return user.getRoles().stream().map(o -> new SimpleGrantedAuthority(
 				o.getName()
 		)).collect(Collectors.toList());
 	}
 
 	@Override
 	public String getPassword() {
-		return member.getPassword();
+		return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return member.getAccount();
+		return user.getUserId();
 	}
 
 	@Override

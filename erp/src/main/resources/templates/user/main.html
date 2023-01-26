@@ -1,25 +1,12 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Insert title here</title>
-	
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-</head>
-<body>
-	<div class="container mt-5">
-		<div class="row justify-content-center">
-			<div class="col-lg-6">
-				<h1 class="text-center mb-5">MAIN</h1>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="fragment/user_view_layout">
+	<th:block layout:fragment="content_body_view">
+		<div class="container mt-5">
+			<div class="row justify-content-center">
+				<div class="col-lg-6">
+					<h1 class="text-center mb-5">MAIN</h1>
+				</div>
 			</div>
 		</div>
-	</div>
-	
-<script src="/static/common/js/common.js"></script>
-<script>
-</script>
-</body>
+	</th:block>
 </html>

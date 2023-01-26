@@ -22,9 +22,9 @@ public class Token {
 
 	@Id
 	@JsonIgnore
-	private Long id;
+	private String id;
 	
-	private String refresh_token;
+	private String refreshToken;
 	
 	@TimeToLive(unit = TimeUnit.SECONDS)
 	private Integer expiration;

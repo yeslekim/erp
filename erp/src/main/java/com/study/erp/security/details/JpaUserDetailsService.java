@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.study.erp.model.entity.Member;
-import com.study.erp.model.repository.MemberRepository;
+import com.study.erp.model.entity.User;
+import com.study.erp.model.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,15 +14,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JpaUserDetailsService implements UserDetailsService{
 	
-	private final MemberRepository memberRepository;
+	private final UserRepository userRepository;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		Member member = memberRepository.findByAccount(username)
+		User user = userRepository.findByUserId(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Invalid authentication!"));
 		
-		return new CustomUserDetails(member);
+		return new CustomUserDetails(user);
 	}
 
 }

@@ -15,7 +15,7 @@ public class SignRequestDTO {
 
 	private Long id;
 	
-	private String account;
+	private String userId;
 	
 	private String password;
 	
@@ -25,8 +25,8 @@ public class SignRequestDTO {
 	
 	private String email;
 	
-	private String access_token;
+	private String accessToken;
 	
-	private String refresh_token;
+	private String refreshToken;
 	
 }

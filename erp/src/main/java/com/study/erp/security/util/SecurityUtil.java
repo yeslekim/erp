@@ -14,8 +14,8 @@ public class SecurityUtil {
         if (authentication == null || authentication.getName() == null) {
             throw new RuntimeException("로그인 유저 정보가 없습니다.");
         }
-        String account = authentication.getName();
+        String userId = authentication.getName();
         
-        return account;
+        return userId;
     }
 }

@@ -12,9 +12,9 @@ import com.study.erp.model.dto.SignRequestDTO;
 import com.study.erp.model.dto.SignResponseDTO;
 import com.study.erp.model.dto.TokenDTO;
 import com.study.erp.model.entity.Authority;
-import com.study.erp.model.entity.Member;
+import com.study.erp.model.entity.User;
 import com.study.erp.model.entity.redis.Token;
-import com.study.erp.model.repository.MemberRepository;
+import com.study.erp.model.repository.UserRepository;
 import com.study.erp.model.repository.TokenRepository;
 import com.study.erp.security.enums.UserRole;
 import com.study.erp.security.provider.JwtProvider;
@@ -35,17 +35,17 @@ public class SignService {
 	@Value("${token.refresh.expiration}")
 	private int refreshExp;
 	
-	private final MemberRepository memberRepository;
+	private final UserRepository userRepository;
 	private final TokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 	
 	
 	public SignResponseDTO login(SignRequestDTO request) throws Exception {
-		Member member = memberRepository.findByAccount(request.getAccount())
+		User user = userRepository.findByUserId(request.getUserId())
 				.orElseThrow(() ->	new BadCredentialsException("잘못된 계정정보입니다."));
 		
-		if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+		if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			return SignResponseDTO.builder()
 					.result("fail")
 					.build();
@@ -53,19 +53,18 @@ public class SignService {
 		}
 		
 		// refresh token 발급
-		member.setRefreshToken(createRefreshToken(member));
+		user.setRefreshToken(createRefreshToken(user));
 		
 		return SignResponseDTO.builder()
-				.id(member.getId())
-				.account(member.getAccount())
-				.name(member.getName())
-				.email(member.getEmail())
-				.nickname(member.getNickname())
-				.roles(member.getRoles())
+				.userId(user.getUserId())
+				.name(user.getName())
+				.email(user.getEmail())
+				.nickname(user.getNickname())
+				.roles(user.getRoles())
 				.result("success")
 				.token(TokenDTO.builder()
-						.access_token(jwtProvider.createToken(member.getAccount(), member.getRoles()))
-						.refresh_token(member.getRefreshToken())
+						.accessToken(jwtProvider.createToken(user.getUserId(), user.getRoles()))
+						.refreshToken(user.getRefreshToken())
 						.build())
 				.build()
 				;
@@ -74,8 +73,8 @@ public class SignService {
 	public String register(SignRequestDTO request) throws Exception {
 		String result = "fail";
 		try {
-			Member member = Member.builder()
-					.account(request.getAccount())
+			User user = User.builder()
+					.userId(request.getUserId())
 					.password(passwordEncoder.encode(request.getPassword()))
 					.name(request.getName())
 					.nickname(request.getNickname())
@@ -83,9 +82,9 @@ public class SignService {
 //					.roles(UserRole.USER)
 					.build();
 			
-			member.setRoles(Collections.singletonList(Authority.builder().name(UserRole.USER.getValue()).build()));
+			user.setRoles(Collections.singletonList(Authority.builder().name(UserRole.USER.getValue()).build()));
 			
-			memberRepository.save(member);
+			userRepository.save(user);
 			
 			result = "success";
 		} catch (Exception e) {
@@ -101,35 +100,35 @@ public class SignService {
 	/**
 	 * Refresh 토큰을 생성한다.
 	 * Redis 내부에는 
-	 * refreshToken:memberId : tokenValue
+	 * refreshToken:userId : tokenValue
 	 * 형태로 저장
 	 */
-	public String createRefreshToken(Member member) {
+	public String createRefreshToken(User user) {
 		Token token = Token.builder()
-					.id(member.getId())
-					.refresh_token(UUID.randomUUID().toString())
+					.id(user.getUserId())
+					.refreshToken(UUID.randomUUID().toString())
 					.expiration(refreshExp)	// 초
 					.build()
 				;
-		return token.getRefresh_token();
+		return token.getRefreshToken();
 	}
 	
-	public Token validRefreshToken(Member member, String refreshToken) throws Exception {
-		Token token = tokenRepository.findById(member.getId())
+	public Token validRefreshToken(User user, String refreshToken) throws Exception {
+		Token token = tokenRepository.findByUserId(user.getUserId())
 				.orElseThrow(() -> new Exception("만료된 계정입니다. 로그인을 다시 시도하세요"));
 		// 해당 유저의 Refresh 토큰 만료 : Redis에 해당 유저의 토큰이 존재하지 않음
-		if(token.getRefresh_token() == null) {
+		if(token.getRefreshToken() == null) {
 			return null;
 		} else {
 			// 토큰이 같은지 비교
-			if(!token.getRefresh_token().equals(refreshToken)) {
+			if(!token.getRefreshToken().equals(refreshToken)) {
 				return null;
 			}
 			else {
 				// 리프레시 토큰 만료일자가 얼마 남지 않았을 때 토큰 재 발급 (access token 기간보다 짧을 시 재발급)
 				if(token.getExpiration() < accessExp) {
 					token.builder()
-						.refresh_token(createRefreshToken(member))
+						.refreshToken(createRefreshToken(user))
 						.build();
 				}
 				
@@ -139,18 +138,18 @@ public class SignService {
 	}
 	
 	public SignResponseDTO refreshAccessToken(SignRequestDTO signRequest) throws Exception {
-		String account = jwtProvider.getAccount(signRequest.getAccess_token());
-		Member member = memberRepository.findByAccount(account)
+		String userId = jwtProvider.getUserId(signRequest.getAccessToken());
+		User user = userRepository.findByUserId(userId)
 					.orElseThrow(() -> new BadCredentialsException("잘못된 계정정보입니다."));
-		Token refreshToken = validRefreshToken(member, signRequest.getRefresh_token());
+		Token refreshToken = validRefreshToken(user, signRequest.getRefreshToken());
 		
 		if(refreshToken != null) {
 					
 			return SignResponseDTO.builder()
 					.token(
 						TokenDTO.builder()
-						.access_token(jwtProvider.createToken(account, member.getRoles()))
-						.refresh_token(refreshToken.getRefresh_token())
+						.accessToken(jwtProvider.createToken(userId, user.getRoles()))
+						.refreshToken(refreshToken.getRefreshToken())
 						.build()
 					)
 					.result("success")

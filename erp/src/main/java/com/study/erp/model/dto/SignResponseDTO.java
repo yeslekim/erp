@@ -20,7 +20,7 @@ public class SignResponseDTO {
 	
 	private Long id;
 
-	private String account;
+	private String userId;
 
 	private String nickname;
 

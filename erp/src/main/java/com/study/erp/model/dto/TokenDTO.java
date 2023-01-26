@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TokenDTO {
-	private String access_token;
-	private String refresh_token;
+	private String accessToken;
+	private String refreshToken;
 }
