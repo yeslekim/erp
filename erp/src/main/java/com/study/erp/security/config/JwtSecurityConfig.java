@@ -60,8 +60,9 @@ public class JwtSecurityConfig {
 			// /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
 			.requestMatchers("/admin/**").hasRole("ADMIN")
 			// /user로 시작하는 요청은 USER 권한이 있는 유저에게만 허용
-			.requestMatchers("/user/**").hasRole("USER")
-			.anyRequest().denyAll()
+//			.requestMatchers("/user/**").hasRole("USER")
+//			.anyRequest().denyAll()
+			.anyRequest().permitAll()
 			.and()
 			// JWT 인증 필터 적용
 			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)

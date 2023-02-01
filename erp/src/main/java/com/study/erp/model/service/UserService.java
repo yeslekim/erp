@@ -18,8 +18,8 @@ public class UserService {
 	
 	private final UserRepository userRepository;
 
-	public UserResponseDTO getMember(String userId) throws Exception {
-		User user = userRepository.findByUserId(userId)
+	public UserResponseDTO getUser(String userId) throws Exception {
+		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new Exception("계정을 찾을 수 없습니다."));
 		return new UserResponseDTO(user);
 	}

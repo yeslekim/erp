@@ -6,17 +6,17 @@ import java.util.List;
 import com.study.erp.model.entity.Authority;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder 
+@SuperBuilder 
 @AllArgsConstructor 
 @NoArgsConstructor
-public class SignResponseDTO {
+public class SignResponseDTO extends CommonDTO{
 	
 	private Long id;
 
@@ -31,7 +31,5 @@ public class SignResponseDTO {
 	private List<Authority> roles = new ArrayList<>();
 
 	private TokenDTO token;
-	
-	private String result;
 
 }

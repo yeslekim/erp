@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import com.study.erp.model.dto.SignRequestDTO;
 import com.study.erp.model.dto.SignResponseDTO;
@@ -14,8 +15,8 @@ import com.study.erp.model.dto.TokenDTO;
 import com.study.erp.model.entity.Authority;
 import com.study.erp.model.entity.User;
 import com.study.erp.model.entity.redis.Token;
-import com.study.erp.model.repository.UserRepository;
 import com.study.erp.model.repository.TokenRepository;
+import com.study.erp.model.repository.UserRepository;
 import com.study.erp.security.enums.UserRole;
 import com.study.erp.security.provider.JwtProvider;
 
@@ -24,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class SignService {
@@ -41,45 +41,45 @@ public class SignService {
 	private final JwtProvider jwtProvider;
 	
 	
-	public SignResponseDTO login(SignRequestDTO request) throws Exception {
-		User user = userRepository.findByUserId(request.getUserId())
-				.orElseThrow(() ->	new BadCredentialsException("잘못된 계정정보입니다."));
-		
-		if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-			return SignResponseDTO.builder()
-					.result("fail")
-					.build();
-					
+	public SignResponseDTO login(SignRequestDTO signReqDTO) throws Exception {
+		try {
+			
+			User user = userRepository.findById(signReqDTO.getUserId())
+					.orElseThrow(() ->	new BadCredentialsException("잘못된 계정정보입니다."));
+			if(passwordEncoder.matches(signReqDTO.getPassword(), user.getPassword())) {
+				// refresh token 발급
+				user.setRefreshToken(createRefreshToken(user));
+				
+				return SignResponseDTO.builder()
+						.userId(user.getUserId())
+						.name(user.getName())
+						.email(user.getEmail())
+						.nickname(user.getNickname())
+						.roles(user.getRoles())
+						.result("success")
+						.token(TokenDTO.builder()
+								.accessToken(jwtProvider.createToken(user.getUserId(), user.getRoles()))
+								.refreshToken(user.getRefreshToken())
+								.build())
+						.build();
+			}
+		} catch (Exception e) {
+			log.error("SignService.login error : " + e.getMessage());
 		}
-		
-		// refresh token 발급
-		user.setRefreshToken(createRefreshToken(user));
-		
 		return SignResponseDTO.builder()
-				.userId(user.getUserId())
-				.name(user.getName())
-				.email(user.getEmail())
-				.nickname(user.getNickname())
-				.roles(user.getRoles())
-				.result("success")
-				.token(TokenDTO.builder()
-						.accessToken(jwtProvider.createToken(user.getUserId(), user.getRoles()))
-						.refreshToken(user.getRefreshToken())
-						.build())
-				.build()
-				;
+				.result("fail")
+				.build();
 	}
 	
-	public String register(SignRequestDTO request) throws Exception {
+	public String register(SignRequestDTO signReqDTO) throws Exception {
 		String result = "fail";
 		try {
 			User user = User.builder()
-					.userId(request.getUserId())
-					.password(passwordEncoder.encode(request.getPassword()))
-					.name(request.getName())
-					.nickname(request.getNickname())
-					.email(request.getEmail())
-//					.roles(UserRole.USER)
+					.userId(signReqDTO.getUserId())
+					.password(passwordEncoder.encode(signReqDTO.getPassword()))
+					.name(signReqDTO.getName())
+					.nickname(signReqDTO.getNickname())
+					.email(signReqDTO.getEmail())
 					.build();
 			
 			user.setRoles(Collections.singletonList(Authority.builder().name(UserRole.USER.getValue()).build()));
@@ -139,7 +139,7 @@ public class SignService {
 	
 	public SignResponseDTO refreshAccessToken(SignRequestDTO signRequest) throws Exception {
 		String userId = jwtProvider.getUserId(signRequest.getAccessToken());
-		User user = userRepository.findByUserId(userId)
+		User user = userRepository.findById(userId)
 					.orElseThrow(() -> new BadCredentialsException("잘못된 계정정보입니다."));
 		Token refreshToken = validRefreshToken(user, signRequest.getRefreshToken());
 		

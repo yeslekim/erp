@@ -18,7 +18,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 	@Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
     	// token의 principal(주로 id)와 credentials(주로 pw)를 지정
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(request.getParameter("userEmail"), request.getParameter("userPw"));
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(request.getParameter("userId"), request.getParameter("password"));
         setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);
     }

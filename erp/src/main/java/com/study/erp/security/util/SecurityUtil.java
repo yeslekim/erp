@@ -8,7 +8,7 @@ public class SecurityUtil {
 	private SecurityUtil() { }
 	
 	// 현재 로그인 되어있는 유저 정보의 ID 가져오기
-    public static String getAccount() {
+    public static String getUserId() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null) {

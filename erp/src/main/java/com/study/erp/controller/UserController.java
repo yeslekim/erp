@@ -1,16 +1,11 @@
 package com.study.erp.controller;
 
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.study.erp.model.dto.SignResponseDTO;
 import com.study.erp.model.dto.UserResponseDTO;
 import com.study.erp.model.service.UserService;
 import com.study.erp.security.util.SecurityUtil;
@@ -26,15 +21,6 @@ public class UserController {
 
 	@GetMapping("/get")
 	public ResponseEntity<UserResponseDTO> getUser() throws Exception {
-		return new ResponseEntity<>(userService.getMember(SecurityUtil.getAccount()), HttpStatus.OK);
-	}
-	
-	@GetMapping("/test")
-	@ResponseBody
-	public SignResponseDTO test(@RequestParam Map<String, Object> input) throws Exception {
-		return SignResponseDTO.builder()
-				.result("success")
-				.userId("tset")
-				.build();
+		return new ResponseEntity<>(userService.getUser(SecurityUtil.getUserId()), HttpStatus.OK);
 	}
 }
