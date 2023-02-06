@@ -9,7 +9,7 @@ spring:
   jpa:
     show-sql: true
     properties:
-       hibernate.format_sql: true
+      hibernate.format_sql: true
     hibernate:
       ddl-auto: none
   thymeleaf:
@@ -25,7 +25,6 @@ spring:
   mvc:
     static-path-pattern: /static/**
 
-    
 server:
   port: 8881
   error:

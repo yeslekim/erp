@@ -18,5 +18,22 @@
 		<!-- ## footer s ## -->
 	<!-- 	<th:block th:insert="fragment/footer :: footer_view"></th:block> -->
 		<!-- ## footer e ## -->
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				userCheck();
+			});
+			
+			// 로그인 체크
+			function userCheck() {
+				common_fetch("GET", "/user/get","", function(data) {
+					if(data.result == "fail") {
+						sweetConfirmOkay("warning", data.msg, function(data) {
+							location.href="/";
+						});
+					}
+				});
+			}
+		</script>
 	</body>
 </html>

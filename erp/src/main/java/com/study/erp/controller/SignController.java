@@ -2,7 +2,6 @@ package com.study.erp.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,15 +11,17 @@ import com.study.erp.model.dto.SignResponseDTO;
 import com.study.erp.model.service.SignService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class SignController {
-
+	
 	private final SignService signService;
 	
 	@PostMapping(value = "/register")
-	public ResponseEntity<String> signup(@RequestBody SignRequestDTO signRequest) throws Exception {
+	public ResponseEntity<SignResponseDTO> signup(@RequestBody SignRequestDTO signRequest) throws Exception {
 		return new ResponseEntity<>(signService.register(signRequest), HttpStatus.CREATED);
 	}
 	

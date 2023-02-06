@@ -6,11 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
-public class HomeViewController {
+public class SignViewController {
 
-	@GetMapping("/")
-	public String home(HttpServletRequest request) throws Exception {
-		return "login";
+	@GetMapping("/register")
+	public String register(HttpServletRequest request) throws Exception {
+		return "register";
 	}
-	
 }

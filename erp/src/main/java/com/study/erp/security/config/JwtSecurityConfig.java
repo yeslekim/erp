@@ -1,6 +1,8 @@
 package com.study.erp.security.config;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.erp.security.filter.JwtAuthenticationFilter;
 import com.study.erp.security.provider.JwtProvider;
 
@@ -34,6 +37,8 @@ import lombok.RequiredArgsConstructor;
 public class JwtSecurityConfig {
 
 	private final JwtProvider jwtProvider;
+	
+	private ObjectMapper objectMapper = new ObjectMapper();
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -54,15 +59,14 @@ public class JwtSecurityConfig {
 			.requestMatchers("/static/**").permitAll()
 			.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 			// home 승인
-			.requestMatchers("/", "/view/**").permitAll()
+			.requestMatchers("/", "/view/**", "").permitAll()
 			// 회원가입과 로그인은 모두 승인
 			.requestMatchers("/register", "/login", "/refresh").permitAll()
 			// /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
 			.requestMatchers("/admin/**").hasRole("ADMIN")
 			// /user로 시작하는 요청은 USER 권한이 있는 유저에게만 허용
-//			.requestMatchers("/user/**").hasRole("USER")
-//			.anyRequest().denyAll()
-			.anyRequest().permitAll()
+			.requestMatchers("/user/**").hasRole("USER")
+			.anyRequest().denyAll()
 			.and()
 			// JWT 인증 필터 적용
 			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
@@ -76,10 +80,13 @@ public class JwtSecurityConfig {
 					// 권한 문제가 발생했을 때 이 부분을 호출한다.
 					response.setStatus(403);
 					response.setCharacterEncoding("utf-8");
-					response.setContentType("text/html; charset=UTF-8");
-					response.getWriter().write("권한이 없는 사용자입니다.");
+					response.setContentType("application/json");
 					
-//					response.sendRedirect(request.getHeader("Referer"));
+					Map<String, String> resultMap = new HashMap<>();
+					resultMap.put("result", "fail");
+					resultMap.put("returnUrl", "/");
+					resultMap.put("msg", "권한이 없는 사용자입니다.");
+					response.getWriter().write(objectMapper.writeValueAsString(resultMap));
 				}
 			})
 			.authenticationEntryPoint(new AuthenticationEntryPoint() {
@@ -90,10 +97,18 @@ public class JwtSecurityConfig {
 					// 인증문제가 발생했을 때 이 부분을 호출한다.
 					response.setStatus(401);
 					response.setCharacterEncoding("utf-8");
-					response.setContentType("text/html; charset=UTF-8");
-					response.getWriter().write("인증되지 않은 사용자입니다.");
+					response.setContentType("application/json");
 					
-					response.sendRedirect("/");
+					if(request.getHeader("fetch") != null) {
+						Map<String, String> resultMap = new HashMap<>();
+						resultMap.put("result", "fail");
+						resultMap.put("returnUrl", "/");
+						resultMap.put("msg", "인증되지 않은 사용자입니다.");
+						response.getWriter().write(objectMapper.writeValueAsString(resultMap));
+					} else {
+						response.sendRedirect("/");
+					}
+					
 				}
 			});
 		

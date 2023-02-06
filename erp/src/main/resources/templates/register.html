@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="fragment/login_view_layout">
+	<th:block layout:fragment="content_body_view">
+		<div class="container">
+			<div class="card o-hidden border-0 shadow-lg my-5">
+				<div class="card-body p-0">
+					<!-- Nested Row within Card Body -->
+					<div class="row">
+						<div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+						<div class="col-lg-7">
+							<div class="p-5">
+								<div class="text-center">
+									<h1 class="h4 text-gray-900 mb-4">Register</h1>
+								</div>
+								<div class="user">
+									<div class="form-group">
+										<input type="text" class="form-control form-control-user" id="userId" placeholder="ID">
+									</div>
+									<div class="form-group">
+										<input type="email" class="form-control form-control-user" id="email" placeholder="Email Address">
+									</div>
+									<div class="form-group">
+										<input type="text" class="form-control form-control-user" id="nickname" placeholder="Nickname">
+									</div>
+									<div class="form-group">
+										<input type="text" class="form-control form-control-user" id="name" placeholder="Name">
+									</div>
+									<div class="form-group row">
+										<div class="col-sm-6 mb-3 mb-sm-0">
+											<input type="password" class="form-control form-control-user"
+												id="password" placeholder="Password">
+										</div>
+										<div class="col-sm-6">
+											<input type="password" class="form-control form-control-user"
+												id="repeatPassword" placeholder="Repeat Password">
+										</div>
+									</div>
+									<button class="btn btn-primary btn-user btn-block" onclick="register();">Register</button>
+<!-- 									<hr> -->
+<!-- 									<a href="index.html" class="btn btn-google btn-user btn-block"> -->
+<!-- 										<i class="fab fa-google fa-fw"></i> Register with Google -->
+<!-- 									</a> -->
+<!-- 									<a href="index.html" class="btn btn-facebook btn-user btn-block"> -->
+<!-- 										<i class="fab fa-facebook-f fa-fw"></i> Register with Facebook -->
+<!-- 									</a> -->
+								</div>
+								<hr>
+								<div class="text-center">
+									<a class="small" href="forgot-password.html">Forgot Password?</a>
+								</div>
+								<div class="text-center">
+									<a class="small" href="login.html">Already have an account? Login!</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			// 회원가입
+			function register() {
+				if(vd_register()) {
+					var dataSet = {
+						userId : document.getElementById("userId").value
+						, password : document.getElementById("password").value
+						, email : document.getElementById("email").value
+						, name : document.getElementById("name").value
+						, nickname : document.getElementById("nickname").value
+					}
+					
+// 					common_fetch("POST", "/register", dataSet, function(data) {
+// 						if(data.result == "success") {
+// 							sweetConfirmOkay("success", "회원가입되었습니다.", function() {
+// 								location.href="/";
+// 							})
+// 						} else {
+// 							sweetConfirmOkay("error", data.msg, function() {
+// 							})
+// 						}
+// 					})
+				}
+			}
+			
+			// validation
+			function vd_register() {
+				var txt = " 입력해주세요.";
+				if(document.getElementById("userId").value.trim() == "") {
+					sweetAlert("ID를" + txt);
+					document.getElementById("userId").focus();
+					return false;
+				}
+				if(document.getElementById("password").value.trim() == "") {
+					sweetAlert("비밀번호를" + txt);
+					document.getElementById("password").focus();
+					return false;
+				}
+				if(document.getElementById("repeatPassword").value.trim() == "") {
+					sweetAlert("비밀번호 확인을" + txt);
+					document.getElementById("repeatPassword").focus();
+					return false;
+				}
+				if(document.getElementById("email").value.trim() == "") {
+					sweetAlert("이메일을" + txt);
+					document.getElementById("email").focus();
+					return false;
+				}
+				if(document.getElementById("name").value.trim() == "") {
+					sweetAlert("이름을" + txt);
+					document.getElementById("name").focus();
+					return false;
+				}
+				if(document.getElementById("nickname").value.trim() == "") {
+					sweetAlert("닉네임을" + txt);
+					document.getElementById("nickname").focus();
+					return false;
+				}
+				if(document.getElementById("password").value != document.getElementById("repeatPassword").value) {
+					sweetAlert("비밀번호가 일치하지 않습니다.");
+					document.getElementById("password").focus();
+					return false;
+				}
+				return true;
+			}
+		</script>
+	</th:block>
+</html>

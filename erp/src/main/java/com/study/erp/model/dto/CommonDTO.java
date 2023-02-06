@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 public class CommonDTO {
 	
 	private String result;	// success or fail
+	private String msg;		// msg
 	
 	private String regDt;
 	private String regId;

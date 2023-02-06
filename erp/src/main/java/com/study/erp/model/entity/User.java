@@ -1,16 +1,19 @@
 package com.study.erp.model.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +24,8 @@ import lombok.NoArgsConstructor;
 @Builder 
 @AllArgsConstructor 
 @NoArgsConstructor
+@DynamicInsert	// insert시 지정된 defualt값을 적용
+@DynamicUpdate	// 수정된 데이터만 update
 public class User {
 
 	@Id
@@ -28,16 +33,31 @@ public class User {
 	@Column(unique = true)
 	private String userId;
 	
+	@Column
 	private String password;
 	
+	@Column
 	private String nickname;
 	
+	@Column
 	private String name;
 	
 	@Column(unique = true)
 	private String email;
 	
+	@Column
 	private String refreshToken;
+	
+	@Column
+	private LocalDateTime createDt;
+	
+	@Column
+	private String delYn;
+	
+	@PrePersist // 데이터 생성이 이루어질때 사전 작업
+	public void prePersist() {
+		this.createDt = LocalDateTime.now();
+	}
 	
 	/*
 	 * 1. @OneToMany : 1:N의 관계

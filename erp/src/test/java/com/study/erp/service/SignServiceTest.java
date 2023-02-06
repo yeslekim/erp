@@ -101,9 +101,9 @@ public class SignServiceTest {
 		doReturn(user).when(userRepository).save(any());
 		
 		// when
-		final String result = target.register(signReqDTO);
+		final SignResponseDTO result = target.register(signReqDTO);
 		
 		// then
-		assertThat(result).isEqualTo("success");
+		assertThat(result.getResult()).isEqualTo("success");
 	}
 }

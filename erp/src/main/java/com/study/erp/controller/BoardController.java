@@ -33,11 +33,11 @@ public class BoardController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<BoardResponseDTO> boardAdd(@RequestBody BoardResponseDTO boardReqDTO) throws Exception {
+	public ResponseEntity<BoardResponseDTO> boardAdd(@RequestBody BoardRequestDTO boardReqDTO) throws Exception {
 		return new ResponseEntity<>(boardService.addBoard(boardReqDTO) , HttpStatus.OK);
 	}
 	@PatchMapping("/edit")
-	public ResponseEntity<BoardResponseDTO> boardEdit(@RequestBody BoardResponseDTO boardReqDTO) throws Exception {
+	public ResponseEntity<BoardResponseDTO> boardEdit(@RequestBody BoardRequestDTO boardReqDTO) throws Exception {
 		return new ResponseEntity<>(boardService.editBoard(boardReqDTO) , HttpStatus.OK);
 	}
 }

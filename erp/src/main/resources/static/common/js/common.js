@@ -1,13 +1,13 @@
 // 공통 request send
-async function common_send(method, url, dataset, callback) {
+async function common_fetch(method, url, dataset, callback) {
 	let options = {
 		method
 		, headers : {
 			'Content-Type': 'application/json'
 			, Authorization : 'BEARER ' + window.localStorage.getItem("acTk")
+			, 'fetch' : true
 		}
 	};
-	console.log(options);
 	if ( 'GET' === method ) {
 		url += '?' + ( new URLSearchParams( dataset ) ).toString();
 	} else {
@@ -20,7 +20,7 @@ async function common_send(method, url, dataset, callback) {
 		})
 		.catch((err) => {
 			console.log(err)
-			console.log("관리자에게 문의하세요.");
+			sweetAlert("관리자에게 문의하세요.")
 			return false;
 		})
 		// Promise 작동방식으로 인해 한번 더 then 후 callback

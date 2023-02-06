@@ -26,7 +26,7 @@ public class BoardService {
 		return chgBoardDTO(boardRepository.findAll(BoardSpecification.searchWith(boardReqDTO), pageable));
 	}
 	
-	public BoardResponseDTO addBoard(BoardResponseDTO boardReqDTO) throws Exception {
+	public BoardResponseDTO addBoard(BoardRequestDTO boardReqDTO) throws Exception {
 		// 게시판 등록
 		BoardResponseDTO boardResDTO = new BoardResponseDTO();
 		String result = "fail";
@@ -47,7 +47,7 @@ public class BoardService {
 		return boardResDTO;
 	}
 	
-	public BoardResponseDTO editBoard(BoardResponseDTO boardReqDTO) throws Exception {
+	public BoardResponseDTO editBoard(BoardRequestDTO boardReqDTO) throws Exception {
 		// 게시판 등록
 		BoardResponseDTO boardResDTO = new BoardResponseDTO();
 		String result = "fail";

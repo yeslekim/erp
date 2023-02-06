@@ -23,21 +23,19 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @DynamicInsert	// insert시 지정된 defualt값을 적용
 @DynamicUpdate	// 수정된 데이터만 update
-public class Board extends CommonEntityUtil{
-
+public class Menu extends CommonEntityUtil{
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(unique = true)
-	private Integer boardId;
-	
-	@Column
-	private String boardType;
+	private Integer menuId;
 	
 	@NotNull
 	@Column
-	private String title;
+	private String menuNm;
 	
+	@NotNull
 	@Column
-	private String contents;
-	
+	private Integer menuOrder;
+
 }

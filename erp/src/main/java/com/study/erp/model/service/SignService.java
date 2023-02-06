@@ -1,13 +1,13 @@
 package com.study.erp.model.service;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
 import com.study.erp.model.dto.SignRequestDTO;
 import com.study.erp.model.dto.SignResponseDTO;
@@ -20,7 +20,6 @@ import com.study.erp.model.repository.UserRepository;
 import com.study.erp.security.enums.UserRole;
 import com.study.erp.security.provider.JwtProvider;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,7 +70,7 @@ public class SignService {
 				.build();
 	}
 	
-	public String register(SignRequestDTO signReqDTO) throws Exception {
+	public SignResponseDTO register(SignRequestDTO signReqDTO) throws Exception {
 		String result = "fail";
 		try {
 			User user = User.builder()
@@ -82,17 +81,26 @@ public class SignService {
 					.email(signReqDTO.getEmail())
 					.build();
 			
-			user.setRoles(Collections.singletonList(Authority.builder().name(UserRole.USER.getValue()).build()));
-			
-			userRepository.save(user);
-			
-			result = "success";
+			if(userRepository.findById(user.getUserId()).isEmpty()) {
+				user.setRoles(Collections.singletonList(Authority.builder().name(UserRole.USER.getValue()).build()));
+				
+				userRepository.save(user);
+				
+				result = "success";
+			} else {
+				return SignResponseDTO.builder()
+						.result(result)
+						.msg("아이디가 이미 존재합니다.")
+						.build();
+			}
 		} catch (Exception e) {
 			log.error("SignService.register error : " + e.getMessage());
 			throw new Exception("잘못된 요청입니다.");
 		}
 		
-		return result;
+		return SignResponseDTO.builder()
+				.result(result)
+				.build();
 	}
 	
 	// Refresh Token ====================
