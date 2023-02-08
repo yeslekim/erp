@@ -7,11 +7,11 @@
 					<h1 class="text-center mb-5">Login</h1>
 					<div class="form-group">
 						<label for="username">UserEmail</label>
-						<input type="text" class="form-control" id="userId" placeholder="Enter userEmail">
+						<input type="text" class="form-control" id="userId" placeholder="Enter userEmail" onkeyup="enterSubmit();">
 					</div>
 					<div class="form-group">
 						<label for="password">Password</label>
-						<input type="password" class="form-control" id="password" placeholder="Enter password">
+						<input type="password" class="form-control" id="password" placeholder="Enter password" onkeyup="enterSubmit();">
 					</div>
 					<button class="btn btn-primary btn-block" onclick="login();">Submit</button>
 					<button class="btn btn-warning btn-block" onclick="location.href='/register';">Register</button>
@@ -20,31 +20,58 @@
 		</div>
 		
 		<script>
-		
 			document.addEventListener("DOMContentLoaded", () => {
 			});
 			
 			// 로그인
 			function login() {
-				var userId = document.getElementById("userId").value;
-				var password = document.getElementById("password").value;
-				
-				// TODO validation
-				var dataSet = {
-					userId : userId
-					, password : password
+				if(vd_login()) {
+					var userId = document.getElementById("userId").value;
+					var password = document.getElementById("password").value;
+					
+					// TODO validation
+					var dataSet = {
+						userId : userId
+						, password : password
+					}
+					common_fetch("POST", "/login", dataSet, function(data) {
+						if(data.result == "success") {
+						//	1. 리프레시 토큰은 HTTP ONLY SECURE 쿠키에 저장하자.
+						//	2. 액세스 토큰은 프로그램상 자바스크립트 로컬 변수에 저장하고, http 헤더에 bearer 토큰으로 담아서 매 요청마다 보내도록 하자.
+							document.cookie = "rfTk=" + data.token.refreshToken + "; httpOnly";
+							window.localStorage.setItem("acTk", data.token.accessToken);
+							sweetConfirmOkay("info", "로그인에 성공하였습니다.", function() {
+								location.href="/view/user/main";
+							})
+						} else {
+							sweetAlert("아이디 혹은 비밀번호를 확인해주세요.");
+						}
+					});
 				}
-				common_fetch("POST", "/login", dataSet, function(data) {
-		// 			1. 리프레시 토큰은 HTTP ONLY SECURE 쿠키에 저장하자.
-		// 			2. 액세스 토큰은 프로그램상 자바스크립트 로컬 변수에 저장하고, http 헤더에 bearer 토큰으로 담아서 매 요청마다 보내도록 하자.
-					document.cookie = "rfTk=" + data.token.refreshToken + "; httpOnly";
-					window.localStorage.setItem("acTk", data.token.accessToken);
-					sweetConfirmOkay("info", "로그인에 성공하였습니다.", function() {
-						location.href="/view/user/main";
-					})
-				});
 			}
 			
+			function vd_login() {
+				var txt = " 입력해주세요.";
+				if(document.getElementById("userId").value.trim() == "") {
+					sweetAlert("ID를" + txt);
+					document.getElementById("userId").focus();
+					return false;
+				}
+				if(document.getElementById("password").value.trim() == "") {
+					sweetAlert("비밀번호를" + txt);
+					document.getElementById("password").focus();
+					return false;
+				}
+				
+				return true;
+			}
+			
+			// enter submit
+			function enterSubmit() {
+				if (window.event.keyCode == 13) {
+					login();
+				}
+			}
 		</script>
 	</th:block>
 </html>

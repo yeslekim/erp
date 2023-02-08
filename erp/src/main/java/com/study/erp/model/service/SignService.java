@@ -1,7 +1,6 @@
 package com.study.erp.model.service;
 
 import java.util.Collections;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +41,6 @@ public class SignService {
 	
 	public SignResponseDTO login(SignRequestDTO signReqDTO) throws Exception {
 		try {
-			
 			User user = userRepository.findById(signReqDTO.getUserId())
 					.orElseThrow(() ->	new BadCredentialsException("잘못된 계정정보입니다."));
 			if(passwordEncoder.matches(signReqDTO.getPassword(), user.getPassword())) {
